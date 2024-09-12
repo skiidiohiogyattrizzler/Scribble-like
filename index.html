@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bozheng's Drawing Game</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #gameContainer {
+            width: 80%;
+            max-width: 1200px;
+            background-color: #2e2e2e;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        #canvasContainer {
+            width: 65%;
+            background-color: #1a1a1a;
+            border: 2px solid #3a3a3a;
+            padding: 10px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        canvas {
+            background-color: white;
+            border-radius: 5px;
+        }
+
+        #chatContainer {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #chatBox {
+            background-color: #1a1a1a;
+            border: 2px solid #3a3a3a;
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #inputContainer {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            border-radius: 5px;
+            border: 2px solid #3a3a3a;
+            background-color: #3a3a3a;
+            color: #ffffff;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            background-color: #4caf50;
+            color: #ffffff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #playerList {
+            background-color: #1a1a1a;
+            border: 2px solid #3a3a3a;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- Canvas for Drawing -->
+        <div id="canvasContainer">
+            <canvas id="drawingCanvas" width="600" height="400"></canvas>
+        </div>
+
+        <!-- Chat and Guess Area -->
+        <div id="chatContainer">
+            <!-- Chat Box -->
+            <div id="chatBox">
+                <p><strong>Chat:</strong></p>
+            </div>
+
+            <!-- Input for guessing -->
+            <div id="inputContainer">
+                <input type="text" id="guessInput" placeholder="Enter your guess...">
+                <button onclick="submitGuess()">Submit</button>
+            </div>
+
+            <!-- Player List -->
+            <div id="playerList">
+                <p><strong>Players:</strong></p>
+                <ul>
+                    <li>Player 1</li>
+                    <li>Player 2</li>
+                    <li>Player 3</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mousemove', draw);
+
+        function startDrawing() {
+            drawing = true;
+            ctx.beginPath();
+        }
+
+        function stopDrawing() {
+            drawing = false;
+        }
+
+        function draw(event) {
+            if (!drawing) return;
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#ffffff';
+            
+            ctx.lineTo(event.offsetX, event.offsetY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(event.offsetX, event.offsetY);
+        }
+
+        function submitGuess() {
+            const guess = document.getElementById('guessInput').value;
+            const chatBox = document.getElementById('chatBox');
+            const newMessage = document.createElement('p');
+            newMessage.textContent = `You guessed: ${guess}`;
+            chatBox.appendChild(newMessage);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+            document.getElementById('guessInput').value = ''; // Clear input
+        }
+    </script>
+</body>
+</html>
